@@ -49,13 +49,6 @@ function getFinalPage (teacher, school, schoolId, data) {
   return htmlHeader;
 }
 
-function openPrintWindow (teacher, school, schoolId, data) {
-  printWindow = window.open("");
-  printWindow.document.write(getFinalPage(data));
-  printWindow.print();
-  printWindow.close();
-}
-
 function getHeader () {
   return '<!DOCTYPE html>\n'
     + '<html>\n'
@@ -70,9 +63,9 @@ function getFooter (data) {
   return '  <script type="text/javascript">\n'
     + 'var data = ' + JSON.stringify(data) + ';\n'
     + 'function getFinalPage (doc) {\n'
-    + '  var teacher = "' + data[0].teacher + '";\n'
-    + '  var school = "' + data[0].school + '";\n'
-    + '  var schoolCode = "' + data[0].schoolCode + '";\n'
+    + '  var teacher = "' + data[ 0 ].teacher + '";\n'
+    + '  var school = "' + data[ 0 ].school + '";\n'
+    + '  var schoolCode = "' + data[ 0 ].schoolCode + '";\n'
     + '  var div = doc.createElement("div");\n'
     + '  var sendTextDiv = doc.createElement("div");\n'
     + '  var youngDeichmanDiv = doc.createElement("div");\n'
@@ -217,7 +210,7 @@ function getFooter (data) {
     + '        .cloneContents()\n'
     + '        .querySelectorAll("td.table-one")\n'
     + '    ).forEach(\n'
-    + '        item => {\n'
+    + '        (item) => {\n'
     + '            var index = item.getAttribute("data-row-number");\n'
     + '            if (!arr.includes(index)) {arr.push(index);}\n'
     + '    });\n'
@@ -276,7 +269,7 @@ function getPage (data) {
       + '        <td class="table-one" data-row-number="' + i + '">' + data[ i ].itype + '</td>\n'
       + '        <td class="table-one" data-row-number="' + i + '">' + data[ i ].biblionumber + '</td>\n'
       + '        <td class="table-one" data-row-number="' + i + '">' + data[ i ].copynumber + '</td>\n'
-      + '        <td class="table-one" data-row-number="' + i + '">' + i  + '</td>\n'
+      + '        <td class="table-one" data-row-number="' + i + '">' + i + '</td>\n'
       + '      </tr>';
   }
   return '    <div>'
@@ -299,18 +292,17 @@ init(
     'itype': 'BOK',
     'biblionumber': '123123',
     'copynumber': '002'
-  },
-    {
-      'school': 'School name',
-      'schoolCode': 'SK 123',
-      'teacher': 'Teachery McTeacherface',
-      'issuedate': '2017-01-02 09:00',
-      'author': 'McFarin, Sugary',
-      'title': 'Saccharine stuff',
-      'date_due': '2017-03-02',
-      'location': 'RL 2321',
-      'itype': 'BOK',
-      'biblionumber': '123123',
-      'copynumber': '003'
-    } ]
+  }, {
+    'school': 'School name',
+    'schoolCode': 'SK 123',
+    'teacher': 'Teachery McTeacherface',
+    'issuedate': '2017-01-02 09:00',
+    'author': 'McFarin, Sugary',
+    'title': 'Saccharine stuff',
+    'date_due': '2017-03-02',
+    'location': 'RL 2321',
+    'itype': 'BOK',
+    'biblionumber': '123123',
+    'copynumber': '003'
+  } ]
 );
