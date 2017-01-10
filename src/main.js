@@ -57,7 +57,7 @@ function getButton (document) {
 function getScripts(doc, data) {
   var script = doc.createElement('script');
   script.type = 'text/javascript';
-  script.innerText = getJavascript(data);
+  script.innerHTML = getJavascript(data);
   return script;
 }
 
@@ -114,7 +114,6 @@ function getJavascript (data) {
     + '  div.appendChild(schoolCodeDiv);\n'
     + '  return div;\n'
     + '}\n'
-    + '\n'
     + 'function formatRows (doc, rows) {\n'
     + '  var table = doc.createElement("table");\n'
     + '  var thead = doc.createElement("tr");\n'
@@ -138,7 +137,6 @@ function getJavascript (data) {
     + '  thead.appendChild(thExemplar);\n'
     + '  table.appendChild(thead);\n'
     + '  for (var i = 0; i < rows.length; i++) {\n'
-    + '    console.log("Taser:" + rows[i]);\n'
     + '    var tr = doc.createElement("tr");\n'
     + '    var dueDate = doc.createElement("td");\n'
     + '    var author = doc.createElement("td");\n'
@@ -193,7 +191,7 @@ function getJavascript (data) {
     + '                  + "div.second-page { font-family: sans-serif; margin-top: 5em;} "\n'
     + '                  + "div.loans-title { font-size: 2em; } ";\n'
     + '  return style;\n'
-    + '}'
+    + '}\n\n'
     + 'function openPrintWindow (rows) {\n'
     + '  printWindow = window.open("");\n'
     + '  printWindow.document.head.appendChild(getStyles(printWindow.document));'
@@ -225,7 +223,6 @@ function getJavascript (data) {
     + '    var arr = [];\n'
     + '    Array.prototype.slice.call(checked).forEach(\n'
     + '        (item) => {\n'
-    + '            console.log("woola " + item.parentNode);'
     + '            var index = item.parentNode.getAttribute("data-row-number");\n'
     + '            if (!arr.includes(index)) {arr.push(index);}\n'
     + '    });\n'
