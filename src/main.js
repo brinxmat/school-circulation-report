@@ -1,9 +1,24 @@
 function init (data) {
   printWindow = window.open('');
   doc = printWindow.document;
+  doc.head.appendChild(getStyle(doc));
   doc.body.appendChild(getButton(doc));
   doc.body.appendChild(getMetadata(doc, data));
   doc.body.appendChild(getScripts(doc, data));
+}
+
+function getStyle (doc) {
+  var style = doc.createElement('style');
+  style.setAttribute('type', 'text/css');
+  style.innerHTML = '
+body { font-family: sans-serif; }
+table { font-family: sans-serif; border-collapse: collapse;}
+table th { font-weight: bold; }
+table th, table td { border: 1p solid #000; text-align: left; padding: 0.5em; }
+div.school-name, div.school-code, div.teacher-name { font-weight: bold; }
+button.button { width: 6em; height: 2em; font-size: 1em; }
+    ';
+  return style;
 }
 
 function getTable (doc, data) {
@@ -34,6 +49,7 @@ function getButton (document) {
   button.type = 'button';
   button.value = 'button';
   button.id = 'button';
+  button.className = 'button';
   button.innerText = 'Skriv ut';
   return button;
 }
@@ -227,6 +243,9 @@ function getMetadata (doc, data) {
   var schoolCode = doc.createElement('p');
   var teacher = doc.createElement('p');
   metadata.className = 'break-after';
+  school.className = 'school-name';
+  schoolCode.className = 'school-code';
+  teacher.className = 'teacher-name';
   school.innerText = data[ 0 ].school;
   schoolCode.innerText = data[ 0 ].schoolCode;
   teacher.innerText = data[ 0 ].teacher;
