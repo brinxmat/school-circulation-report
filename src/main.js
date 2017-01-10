@@ -200,7 +200,14 @@ function getJavascript (data) {
     + '  printWindow.document.body.appendChild(formatRows(printWindow.document, rows));\n'
     + '  printWindow.print();\n'
     + '  printWindow.close();\n'
-    + '}\n'
+    + '}\n\n'
+    + 'document.getElementById("selectAll").addEventListener("click", function () {\n'
+    + '  var checkboxes = document.getElementsByTagName("input");\n'
+    + '  var checkstate = (this.checked === true) ? true : false;\n'
+    + '  Array.prototype.slice.call(checkboxes).forEach( ( item ) => {\n'
+    + '    item.checked = checkstate;\n'
+    + '  });\n'
+    + '});\n'
     + 'document.getElementById("button").addEventListener("click", function() {\n'
     + '  var selection = document.getSelection();\n'
     + '  if (selection.toString() !== "") {\n'
@@ -254,9 +261,18 @@ function getMetadata (doc, data) {
 }
 
 function getCheckbox(doc, rowNumber) {
+
   var checkbox = doc.createElement('input');
   checkbox.type = 'checkbox';
-  checkbox.id = 'cb_' + rowNumber;
+
+  if (rowNumber === undefined) {
+    checkbox.id = 'selectAll';
+    checkbox.className = 'select-all';
+  } else {
+    checkbox.id = 'cb_' + rowNumber;
+    checkbox.className = 'row-selector';
+  }
+
   return checkbox;
 }
 
