@@ -1,66 +1,53 @@
 function init (data) {
-  printWindow = window.open("");
-  printWindow.document.write(getHeader(data));
-  printWindow.document.write(getCoverPage(data));
-  printWindow.document.write(getPage(data));
-  printWindow.document.write(getFooter(data));
+  printWindow = window.open('');
+  doc = printWindow.document;
+  doc.body.appendChild(getButton(doc));
+  doc.body.appendChild(getMetadata(doc, data));
+  doc.body.appendChild(getScripts(doc, data));
 }
 
-function getFinalPage (teacher, school, schoolId, data) {
-  var thead = '    <tr>\n' + Object.keys(data).forEach(function (key) {
-      return '      <th>' + key + '</th>\n';
-    }) + '    </tr>\n';
-  var tbody = "";
-  for (var k = 0; k < data.length; k++) {
-    tbody += '    <tr>' + Object.keys(data[ k ]).forEach(function (key) {
-        return '      <td>' + data[ k ][ key ] + '</td>';
-      }) + '    </tr>';
-  }
+function getTable (doc, data) {
+  var table = doc.createElement('table');
+  var header = doc.createElement('tr');
+  Object.keys(data).forEach( function (key) {
+    var th = doc.createElement('th');
+    th.innerText = key;
+    header.appendChild(th);
+  });
+  table.appendChild(header);
 
-  var htmlHeader = '<!DOCTYPE html>\n'
-    + '<html>\n'
-    + '  <head>\n'
-    + '    <title>Skole sirkulasjonsrapport</title>\n'
-    + '  </head>\n'
-    + '  <body>\n'
-    + '    <div class="cover-page>\n'
-    + '      <p>En forsendelse fra</p>\n'
-    + '      <h1>Unge Deichman</h1>\n'
-    + '      <h1>Skoletjenesten</h1>\n'
-    + '      <p>Tlf: 23 43 28 66</p>\n'
-    + '      <p>E-post: deichman.skole@kul.oslo.kommune.no</p>\n'
-    + '      <div class="school-name>' + school + '</div>\n'
-    + '      <div class="teacher-name>' + teacher + '</div>\n'
-    + '      <div class="school-name>\n'
-    + '        <h1>' + schoolId + '</h1>\n'
-    + '      </div>\n'
-    + '    </div>\n'
-    + '    <div class="circulation-page>\n'
-    + '      <div class="image-logo">\n'
-    + '        <img src="https://www.deichman.no/sites/all/themes/deichbib_theme/logo.png" alt="deichmanske bibliotek logo" /> &nbsp; skoletjenesten\n'
-    + '      </div>\n'
-    + '      <h1>Dine lån</h1>\n'
-    + '      <p>' + school + ': ' + teacher + '</p>\n'
-    + '      <table>' + thead + tbody + '</table>\n'
-    + '    </div>\n'
-    + '  </body>\n'
-    + '</html>\n';
+  data.forEach(function (row) {
+    var tr = doc.createElement('tr');
+    row.forEach(function (item) {
+      var td = doc.createElement('td');
+      td.innerText = item.value;
+      tr.appendChild(td);
+    });
+    table.appendChild(tr);
+  });
 
-  return htmlHeader;
+  return table;
 }
 
-function getHeader () {
-  return '<!DOCTYPE html>\n'
-    + '<html>\n'
-    + '  <head>\n'
-    + '  </head>\n'
-    + '  <body>\n'
-    + '    <button id="button" type="button" value="button">Skriv ut</button>';
+function getButton (document) {
+  var button = document.createElement('button');
+  button.type = 'button';
+  button.value = 'button';
+  button.id = 'button';
+  button.innerText = 'Skriv ut';
+  return button;
 }
 
-function getFooter (data) {
+function getScripts(doc, data) {
+  var script = doc.createElement('script');
+  script.type = 'text/javascript';
+  script.innerText = getJavascript(data);
+  return script;
+}
 
-  return '  <script type="text/javascript">\n'
+function getJavascript (data) {
+
+  return '\n'
     + 'var data = ' + JSON.stringify(data) + ';\n'
     + 'function getFinalPage (doc) {\n'
     + '  var teacher = "' + data[ 0 ].teacher + '";\n'
@@ -200,7 +187,6 @@ function getFooter (data) {
     + '  printWindow.print();\n'
     + '  printWindow.close();\n'
     + '}\n'
-
     + 'document.getElementById("button").addEventListener("click", function() {\n'
     + '  var selection = document.getSelection();\n'
     + '  if (selection.toString() !== "") {\n'
@@ -218,7 +204,7 @@ function getFooter (data) {
     + '    arr.forEach((item) => {variableData.push(data[item])});\n'
     + '    openPrintWindow(variableData);\n'
     + '  } else {\n'
-    + '    var checked = document.querySelectorAll(\'input[name=cbx]:checked\');\n'
+    + '    var checked = document.querySelectorAll(\'input[type=checkbox]:checked\');\n'
     + '    if (checked.length > 0) {\n'
     + '    var arr = [];\n'
     + '    Array.prototype.slice.call(checked).forEach(\n'
@@ -232,51 +218,77 @@ function getFooter (data) {
     + '    openPrintWindow(variableData);\n'
     + '    } else {alert("Du må velge eller merke noe");}\n'
     + '  }\n'
-    + '});\n'
-    + '  </script>\n'
-    + '  </body>\n'
-    + '</html>\n';
+    + '});\n';
 }
 
-function getCoverPage (data) {
-  return '<div class="break-after">'
-    + '  <p>' + data[ 0 ].school + '</p>'
-    + '  <p>' + data[ 0 ].schoolCode + '</p>'
-    + '  <p>' + data[ 0 ].teacher + '</p>'
-    + '  <p>Some footer or other</p>'
-    + '</div>';
+function getMetadata (doc, data) {
+  var metadata = doc.createElement('div');
+  var school = doc.createElement('p');
+  var schoolCode = doc.createElement('p');
+  var teacher = doc.createElement('p');
+  metadata.className = 'break-after';
+  school.innerText = data[ 0 ].school;
+  schoolCode.innerText = data[ 0 ].schoolCode;
+  teacher.innerText = data[ 0 ].teacher;
+  metadata.appendChild(school);
+  metadata.appendChild(schoolCode);
+  metadata.appendChild(teacher);
+  metadata.appendChild(formatData(doc, data));
+  return metadata;
 }
 
-function getPage (data) {
-  var tableContent = "";
-  for (var i = 0; i < data.length; i++) {
-    tableContent += '      <tr>\n'
-      + '        <td class="table-one" data-row-number="' + i + '"><input type="checkbox" name="cbx" id="cb_' + i + '" value="'
-      + data[ i ].issuedate + '&nbsp;'
-      + data[ i ].author + '&nbsp;'
-      + data[ i ].title + '&nbsp;'
-      + data[ i ].date_due + '&nbsp;'
-      + data[ i ].location + '&nbsp;'
-      + data[ i ].itype + '&nbsp;'
-      + data[ i ].biblionumber + '&nbsp;'
-      + data[ i ].copynumber + '&nbsp;'
-      + '" /></td>\n'
-      + '        <td class="table-one" data-row-number="' + i + '">' + data[ i ].issuedate + '</td>\n'
-      + '        <td class="table-one" data-row-number="' + i + '">' + data[ i ].author + '</td>\n'
-      + '        <td class="table-one" data-row-number="' + i + '">' + data[ i ].title + '</td>\n'
-      + '        <td class="table-one" data-row-number="' + i + '">' + data[ i ].date_due + '</td>\n'
-      + '        <td class="table-one" data-row-number="' + i + '">' + data[ i ].location + '</td>\n'
-      + '        <td class="table-one" data-row-number="' + i + '">' + data[ i ].itype + '</td>\n'
-      + '        <td class="table-one" data-row-number="' + i + '">' + data[ i ].biblionumber + '</td>\n'
-      + '        <td class="table-one" data-row-number="' + i + '">' + data[ i ].copynumber + '</td>\n'
-      + '        <td class="table-one" data-row-number="' + i + '">' + i + '</td>\n'
-      + '      </tr>';
+function getCheckbox(doc, rowNumber) {
+  var checkbox = doc.createElement('input');
+  checkbox.type = 'checkbox';
+  checkbox.id = 'cb_' + rowNumber;
+  return checkbox;
+}
+
+function getTableCell (doc, rowNumber, data, type) {
+  if (type === undefined) {
+    type = 'td';
   }
-  return '    <div>'
-    + '      <table id="tempTable">\n'
-    + tableContent
-    + '       </table>'
-    + '     </div>';
+  var cell = doc.createElement(type);
+  cell.className = 'table-one';
+  cell.setAttribute('data-row-number', rowNumber);
+  if (typeof data === 'string' || typeof data === 'number') {
+    cell.innerText = data;
+  } else if (typeof data === 'object') {
+    cell.appendChild(data);
+  }
+
+  return cell;
+}
+
+function formatData (doc, data) {
+  var table = doc.createElement('table');
+  var thead = doc.createElement('tr');
+  thead.appendChild(getTableCell(doc, 0, '', 'th'));
+  thead.appendChild(getTableCell(doc, 1, 'Utlånsdato', 'th'));
+  thead.appendChild(getTableCell(doc, 2, 'Forfatter', 'th'));
+  thead.appendChild(getTableCell(doc, 3, 'Tittel', 'th'));
+  thead.appendChild(getTableCell(doc, 4, 'Innleveringsdato', 'th'));
+  thead.appendChild(getTableCell(doc, 5, 'Stedskode', 'th'));
+  thead.appendChild(getTableCell(doc, 6, 'Type', 'th'));
+  thead.appendChild(getTableCell(doc, 7, 'Tittelnr.', 'th'));
+  thead.appendChild(getTableCell(doc, 8, 'Eks.nr.', 'th'));
+  table.appendChild(thead);
+
+  for (var i = 0; i < data.length; i++) {
+    var tr = doc.createElement('tr');
+    tr.appendChild(getTableCell(doc, i, getCheckbox(doc, i)));
+    tr.appendChild(getTableCell(doc, i, data[ i ].issuedate));
+    tr.appendChild(getTableCell(doc, i, data[ i ].author));
+    tr.appendChild(getTableCell(doc, i, data[ i ].title));
+    tr.appendChild(getTableCell(doc, i, data[ i ].date_due));
+    tr.appendChild(getTableCell(doc, i, data[ i ].location));
+    tr.appendChild(getTableCell(doc, i, data[ i ].itype));
+    tr.appendChild(getTableCell(doc, i, data[ i ].biblionumber));
+    tr.appendChild(getTableCell(doc, i, data[ i ].copynumber));
+    table.appendChild(tr);
+  }
+
+  return table;
 }
 
 init(
