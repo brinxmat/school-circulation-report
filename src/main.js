@@ -238,7 +238,35 @@ function getJavascript (data) {
     + '    openPrintWindow(variableData);\n'
     + '    } else {alert("Du må velge eller merke noe");}\n'
     + '  }\n'
-    + '});\n';
+    + '});\n'
+    + 'function sort(table, col, reverse) {'
+    + '  var tb = table.tBodies[0],'
+    + '  tr = Array.prototype.slice.call(tb.rows, 0), i;'
+    + '  reverse = -((+reverse) || -1);'
+    + '  tr = tr.sort('
+    + '  function (a, b) {'
+    + '    return reverse'
+    + '      * (a.cells[col].textContent.trim()'
+    + '        .localeCompare(b.cells[col].textContent.trim())'
+    + '    );'
+    + '  });'
+    + '  for(i = 0; i < tr.length; ++i) tb.appendChild(tr[i]);'
+    + '}'
+    + 'function makeSortable(table) {'
+    + '  var th = table.tHead, i;'
+    + '  th && (th = th.rows[0]) && (th = th.cells);'
+    + '  if (th) i = th.length;'
+    + '  else return;'
+    + '  while (--i >= 0) (function (i) {'
+    + '    var dir = 1;'
+    + '    th[i].addEventListener("click", function () {sort(table, i, (dir = 1 - dir))});'
+    + '  }(i));'
+    + '}'
+    + 'function makeAllSortable(document) {'
+    + '  var t = document.getElementById("initialTable");'
+    + '  makeSortable(t);'
+    + '}'
+    + '(function () {makeAllSortable(document);})();';
 }
 
 function getMetadata (doc, data) {
@@ -294,18 +322,22 @@ function getTableCell (doc, rowNumber, data, type) {
 
 function formatData (doc, data) {
   var table = doc.createElement('table');
-  var thead = doc.createElement('tr');
-  thead.appendChild(getTableCell(doc, 0, '', 'th'));
-  thead.appendChild(getTableCell(doc, 1, 'Utlånsdato', 'th'));
-  thead.appendChild(getTableCell(doc, 2, 'Forfatter', 'th'));
-  thead.appendChild(getTableCell(doc, 3, 'Tittel', 'th'));
-  thead.appendChild(getTableCell(doc, 4, 'Innleveringsdato', 'th'));
-  thead.appendChild(getTableCell(doc, 5, 'Stedskode', 'th'));
-  thead.appendChild(getTableCell(doc, 6, 'Type', 'th'));
-  thead.appendChild(getTableCell(doc, 7, 'Tittelnr.', 'th'));
-  thead.appendChild(getTableCell(doc, 8, 'Eks.nr.', 'th'));
+  table.id = 'initialTable';
+  var thead = doc.createElement('thead');
+  var headtr = doc.createElement('tr');
+  headtr.appendChild(getTableCell(doc, 0, getCheckbox(doc), 'th'));
+  headtr.appendChild(getTableCell(doc, 1, 'Utlånsdato', 'th'));
+  headtr.appendChild(getTableCell(doc, 2, 'Forfatter', 'th'));
+  headtr.appendChild(getTableCell(doc, 3, 'Tittel', 'th'));
+  headtr.appendChild(getTableCell(doc, 4, 'Innleveringsdato', 'th'));
+  headtr.appendChild(getTableCell(doc, 5, 'Stedskode', 'th'));
+  headtr.appendChild(getTableCell(doc, 6, 'Type', 'th'));
+  headtr.appendChild(getTableCell(doc, 7, 'Tittelnr.', 'th'));
+  headtr.appendChild(getTableCell(doc, 8, 'Eks.nr.', 'th'));
+  thead.appendChild(headtr);
   table.appendChild(thead);
 
+  var tbody = doc.createElement('tbody');
   for (var i = 0; i < data.length; i++) {
     var tr = doc.createElement('tr');
     tr.appendChild(getTableCell(doc, i, getCheckbox(doc, i)));
@@ -317,8 +349,9 @@ function formatData (doc, data) {
     tr.appendChild(getTableCell(doc, i, data[ i ].itype));
     tr.appendChild(getTableCell(doc, i, data[ i ].biblionumber));
     tr.appendChild(getTableCell(doc, i, data[ i ].copynumber));
-    table.appendChild(tr);
+    tbody.appendChild(tr);
   }
+  table.appendChild(tbody);
 
   return table;
 }
@@ -340,13 +373,13 @@ init(
     'school': 'School name',
     'schoolCode': 'SK 123',
     'teacher': 'Teachery McTeacherface',
-    'issuedate': '2017-01-02 09:00',
-    'author': 'McFarin, Sugary',
-    'title': 'Saccharine stuff',
-    'date_due': '2017-03-02',
-    'location': 'RL 2321',
-    'itype': 'BOK',
-    'biblionumber': '123123',
-    'copynumber': '003'
+    'issuedate': '2016-01-02 09:00',
+    'author': 'Leech, Peachy',
+    'title': 'Peachy\'s stuff',
+    'date_due': '2016-03-02',
+    'location': 'PL 1121',
+    'itype': 'FILM',
+    'biblionumber': '43242',
+    'copynumber': '001'
   } ]
 );
