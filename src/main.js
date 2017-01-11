@@ -31,7 +31,7 @@ function getURL () {
     path += '../';
   });
 
-  var url = path + '/cgi-bin/koha/svc/report?name=skolerapport&annotated=1&sql_params=' +
+  var url = path + 'cgi-bin/koha/svc/report?name=skolerapport&annotated=1&sql_params=' +
     document.location.search.match(/borrowernumber=([0-9]+)/)[ 1 ];
   return url;
 }
