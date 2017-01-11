@@ -2,17 +2,17 @@ function init () {
   var xhr = new XMLHttpRequest();
   xhr.open('GET', getURL(), true);
 
-  xhr.onreadystatechange = function() {
-      if(xhr.readyState==4 && xhr.status==200) {
-        content = xhr.responseText;
-        if(content != '' && (content)) {
-          createDocument(JSON.parse(content));
-        } else {
-          alert('Wrong' + xhr.error);
-        }
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState == 4 && xhr.status == 200) {
+      var content = xhr.responseText;
+      if (content !== '' && (content)) {
+        createDocument(JSON.parse(content));
+      } else {
+        alert('Wrong' + xhr.error);
       }
     }
-    xhr.send(null);
+  };
+  xhr.send(null);
 }
 
 function createDocument (data) {
