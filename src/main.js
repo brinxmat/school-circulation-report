@@ -26,30 +26,80 @@ function createDocument (data) {
 
 function getURL () {
 
-  var url = 'http://' +  document.location.hostname + ':8081/cgi-bin/koha/svc/report?name=skolerapport&annotated=1&sql_params=' +
-    document.location.search.match(/borrowernumber=([0-9]+)/)[1];
+  var path = '';
+  (document.location.pathname.match(/\//g) || []).forEach(function (item) {
+    path += '../';
+  };
+
+  var url = path + '/cgi-bin/koha/svc/report?name=skolerapport&annotated=1&sql_params=' +
+    document.location.search.match(/borrowernumber=([0-9]+)/)[ 1 ];
   return url;
 }
-
 
 function getStyle (doc) {
   var style = doc.createElement('style');
   style.setAttribute('type', 'text/css');
   style.innerHTML = '
-body { font-family: sans-serif; }
-table { font-family: sans-serif; border-collapse: collapse;}
-table th { font-weight: bold; }
-table th, table td { border: 1p solid #000; text-align: left; padding: 0.5em; }
-div.school-name, div.school-code, div.teacher-name { font-weight: bold; }
-button.button { width: 6em; height: 2em; font-size: 1em; }
-    ';
+  body
+  {
+    font - family
+  :
+    sans - serif;
+  }
+  table
+  {
+    font - family
+  :
+    sans - serif;
+    border - collapse
+  :
+    collapse;
+  }
+  table
+  th
+  {
+    font - weight
+  :
+    bold;
+  }
+  table
+  th, table
+  td
+  {
+    border: 1
+    p
+    solid #000;
+    text - align
+  :
+    left;
+    padding: 0.5e
+    m;
+  }
+  div.school - name, div.school - code, div.teacher - name
+  {
+    font - weight
+  :
+    bold;
+  }
+  button.button
+  {
+    width: 6e
+    m;
+    height: 2e
+    m;
+    font - size
+  :
+    1e
+    m;
+  }
+  ';
   return style;
 }
 
 function getTable (doc, data) {
   var table = doc.createElement('table');
   var header = doc.createElement('tr');
-  Object.keys(data).forEach( function (key) {
+  Object.keys(data).forEach(function (key) {
     var th = doc.createElement('th');
     th.innerText = key;
     header.appendChild(th);
@@ -79,7 +129,7 @@ function getButton (document) {
   return button;
 }
 
-function getScripts(doc, data) {
+function getScripts (doc, data) {
   var script = doc.createElement('script');
   script.type = 'text/javascript';
   script.innerHTML = getJavascript(data);
@@ -313,7 +363,7 @@ function getMetadata (doc, data) {
   return metadata;
 }
 
-function getCheckbox(doc, rowNumber) {
+function getCheckbox (doc, rowNumber) {
 
   var checkbox = doc.createElement('input');
   checkbox.type = 'checkbox';
