@@ -386,4 +386,4 @@ function formatData (doc, data) {
   return table;
 }
 
-init();
+(init())();
