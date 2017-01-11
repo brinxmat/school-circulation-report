@@ -41,57 +41,12 @@ function getStyle (doc) {
   style.setAttribute('type', 'text/css');
   style.innerHTML = '
   body
-  {
-    font - family
-  :
-    sans - serif;
-  }
-  table
-  {
-    font - family
-  :
-    sans - serif;
-    border - collapse
-  :
-    collapse;
-  }
-  table
-  th
-  {
-    font - weight
-  :
-    bold;
-  }
-  table
-  th, table
-  td
-  {
-    border: 1
-    p
-    solid #000;
-    text - align
-  :
-    left;
-    padding: 0.5e
-    m;
-  }
-  div.school - name, div.school - code, div.teacher - name
-  {
-    font - weight
-  :
-    bold;
-  }
-  button.button
-  {
-    width: 6e
-    m;
-    height: 2e
-    m;
-    font - size
-  :
-    1e
-    m;
-  }
+  { font-family: sans-serif; }
+  table { font-family: sans-serif; border-collapse: collapse; }
+  table th { font-weight: bold; }
+  table th, table td { border: 1px solid #000; text-align: left; padding: 0.5em; }
+  div.school-name, div.school-code, div.teacher-name { font-weight: bold; }
+  button.button { width: 6em; height: 2em; font-size: 1em; }
   ';
   return style;
 }
