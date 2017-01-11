@@ -1,4 +1,21 @@
-function init (data) {
+function init () {
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', getURL(), true);
+
+  xhr.onreadystatechange = function() {
+      if(xhr.readyState==4 && xhr.status==200) {
+        content = xhr.responseText;
+        if(content != '' && (content)) {
+          createDocument(JSON.parse(content));
+        } else {
+          alert('Wrong' + xhr.error);
+        }
+      }
+    }
+    xhr.send(null);
+}
+
+function createDocument (data) {
   printWindow = window.open('');
   doc = printWindow.document;
   doc.head.appendChild(getStyle(doc));
@@ -6,6 +23,14 @@ function init (data) {
   doc.body.appendChild(getMetadata(doc, data));
   doc.body.appendChild(getScripts(doc, data));
 }
+
+function getURL () {
+
+  var url = 'http://' +  document.location.hostname + ':8081/cgi-bin/koha/svc/report?name=skolerapport&annotated=1&sql_params=' +
+    document.location.search.match(/borrowernumber=([0-9]+)/)[1];
+  return url;
+}
+
 
 function getStyle (doc) {
   var style = doc.createElement('style');
@@ -311,10 +336,10 @@ function getTableCell (doc, rowNumber, data, type) {
   var cell = doc.createElement(type);
   cell.className = 'table-one';
   cell.setAttribute('data-row-number', rowNumber);
-  if (typeof data === 'string' || typeof data === 'number') {
-    cell.innerText = data;
-  } else if (typeof data === 'object') {
+  if (typeof data === 'object' && data !== null) {
     cell.appendChild(data);
+  } else {
+    cell.innerText = data;
   }
 
   return cell;
@@ -356,30 +381,4 @@ function formatData (doc, data) {
   return table;
 }
 
-init(
-  [ {
-    'school': 'School name',
-    'schoolCode': 'SK 123',
-    'teacher': 'Teachery McTeacherface',
-    'issuedate': '2017-01-02 09:00',
-    'author': 'McFarin, Sugary',
-    'title': 'Saccharine stuff',
-    'date_due': '2017-03-02',
-    'location': 'RL 2321',
-    'itype': 'BOK',
-    'biblionumber': '123123',
-    'copynumber': '002'
-  }, {
-    'school': 'School name',
-    'schoolCode': 'SK 123',
-    'teacher': 'Teachery McTeacherface',
-    'issuedate': '2016-01-02 09:00',
-    'author': 'Leech, Peachy',
-    'title': 'Peachy\'s stuff',
-    'date_due': '2016-03-02',
-    'location': 'PL 1121',
-    'itype': 'FILM',
-    'biblionumber': '43242',
-    'copynumber': '001'
-  } ]
-);
+init();
