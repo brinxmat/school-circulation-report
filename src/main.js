@@ -15,6 +15,13 @@ function init () {
   xhr.send(null);
 }
 
+function errorMessage (error, displayAlert) {
+  if (displayAlert === true) {
+    alert('Det oppstod en feil: ' + error.displayError);
+  }
+  throw new Error(error.error);
+}
+
 function createDocument (data) {
   printWindow = window.open('');
   doc = printWindow.document;
@@ -31,8 +38,13 @@ function getURL () {
     path += '../';
   });
 
-  var url = path + 'cgi-bin/koha/svc/report?name=skolerapport&annotated=1&sql_params=' +
-    document.location.search.match(/borrowernumber=([0-9]+)/)[ 1 ];
+  var borrowernumber = (document.location.search.match(/borrowernumber=([0-9]+)/)
+  || errorMessage({
+    'error': 'No borrower id in document.location.href',
+    'displayError': 'Du må være på brukerens side i Koha'
+  }, true));
+
+  var url = path + 'cgi-bin/koha/svc/report?name=skolerapport&annotated=1&sql_params=' + borrowernumber[ 1 ];
   return url;
 }
 
@@ -96,9 +108,9 @@ function getJavascript (data) {
   return '\n'
     + 'var data = ' + JSON.stringify(data) + ';\n'
     + 'function getFinalPage (doc) {\n'
-    + '  var teacher = "' + data[ 0 ].teacher + '";\n'
+    + '  var teacher = "' + data[ 0 ].teacher + ' (' + data[ 0 ].cardnumber + ')";\n'
     + '  var school = "' + data[ 0 ].school + '";\n'
-    + '  var schoolCode = "' + data[ 0 ].schoolCode + '";\n'
+    + '  var schoolCode = "' + data[ 0 ].schoolcode + '";\n'
     + '  var div = doc.createElement("div");\n'
     + '  var sendTextDiv = doc.createElement("div");\n'
     + '  var youngDeichmanDiv = doc.createElement("div");\n'
@@ -309,7 +321,7 @@ function getMetadata (doc, data) {
   schoolCode.className = 'school-code';
   teacher.className = 'teacher-name';
   school.innerText = data[ 0 ].school;
-  schoolCode.innerText = data[ 0 ].schoolCode;
+  schoolCode.innerText = data[ 0 ].schoolcode;
   teacher.innerText = data[ 0 ].teacher;
   metadata.appendChild(school);
   metadata.appendChild(schoolCode);
@@ -386,4 +398,4 @@ function formatData (doc, data) {
   return table;
 }
 
-(init())();
+init();
