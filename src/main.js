@@ -48,6 +48,16 @@ function getURL () {
   return url;
 }
 
+function formatDate (inDate) {
+  var date = inDate.split(' ')[0];
+  return date;
+}
+
+function getCurrentDate () {
+  var date = new Date(Date.now());
+  return date.toISOString();
+}
+
 function getStyle (doc) {
   var style = doc.createElement('style');
   style.setAttribute('type', 'text/css');
@@ -218,7 +228,7 @@ function getJavascript (data) {
     + '  teacherDetailsDiv.innerText = rows[0].school + ": " + rows[0].teacher;\n'
     + '  headerDiv.appendChild(img);\n'
     + '  headerDiv.appendChild(span);\n'
-    + '  dateDiv.innerText = "Rapport generert: " + Date.now();\n'
+    + '  dateDiv.innerText = "Rapport generert: ' + getCurrentDate() + '";\n'
     + '  div.appendChild(headerDiv);\n'
     + '  div.appendChild(loansDiv);\n'
     + '  div.appendChild(teacherDetailsDiv);\n'
@@ -383,10 +393,10 @@ function formatData (doc, data) {
   for (var i = 0; i < data.length; i++) {
     var tr = doc.createElement('tr');
     tr.appendChild(getTableCell(doc, i, getCheckbox(doc, i)));
-    tr.appendChild(getTableCell(doc, i, data[ i ].issuedate));
+    tr.appendChild(getTableCell(doc, i, formatDate(data[ i ].issuedate)));
     tr.appendChild(getTableCell(doc, i, data[ i ].author));
     tr.appendChild(getTableCell(doc, i, data[ i ].title));
-    tr.appendChild(getTableCell(doc, i, data[ i ].date_due));
+    tr.appendChild(getTableCell(doc, i, formatDate(data[ i ].date_due)));
     tr.appendChild(getTableCell(doc, i, data[ i ].location));
     tr.appendChild(getTableCell(doc, i, data[ i ].itype));
     tr.appendChild(getTableCell(doc, i, data[ i ].biblionumber));
