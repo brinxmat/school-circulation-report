@@ -6,9 +6,20 @@ function init () {
     if (xhr.readyState == 4 && xhr.status == 200) {
       var content = xhr.responseText;
       if (content !== '' && (content)) {
-        createDocument(JSON.parse(content));
+        try {
+          createDocument(JSON.parse(content));
+        } catch (error) {
+          errorMessage({
+            'error': 'JSON couldn\'t be parsed (maybe their session has timed out',
+            'displayError': 'Er du logget inn? Laste Koha på nytt og prøv igjen'
+          }, true);
+        }
       } else {
-        alert('Wrong' + xhr.error);
+        errorMessage({
+          'error': 'Koha responded with ' + xhr.error,
+          'displayError': 'Koha svarte ikke forespørselen om brukerdata som forventet'},
+          true
+        );
       }
     }
   };
@@ -312,8 +323,7 @@ function getJavascript (data) {
     + '  while (--i >= 0) (function (i) {\n'
     + '    var dir = 1;\n'
     + '    th[i].addEventListener("click", function () {\n'
-    + '        console.log(dir);\n'
-    + '        sort(table, i, (dir = 1 - dir));\n'
+    + '      sort(table, i, (dir = 1 - dir));\n'
     + '      addDirection(document, table, this, dir);\n'
     + '    });\n'
     + '  }(i));\n'
